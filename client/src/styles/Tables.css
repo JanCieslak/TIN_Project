@@ -1,0 +1,14 @@
+#main-container {
+    width: calc(1100px / var(--size-divisor));
+    margin: 0 auto;
+}
+
+.container {
+    margin-top: 50px;
+    width: 100%;
+    text-align: left;
+}
+
+#cards-container {
+    display: flex;
+}

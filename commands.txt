@@ -1,0 +1,140 @@
+MySQL:
+  log into your mysql account
+  
+  create a database and tables:
+
+    CREATE DATABASE tindb;
+    USE tindb;
+    -- CREATE TABLE Person (
+    --   person_id   INT NOT NULL,
+    --   firstname   VARCHAR(100) NOT NULL,
+    --   lastname    VARCHAR(100) NOT NULL,
+    --   PRIMARY KEY(person_id)
+    -- );
+    -- CREATE TABLE User (
+    --   user_id     INT NOT NULL,
+    --   username    VARCHAR(100) NOT NULL,
+    --   password    VARCHAR(300) NOT NULL,
+    --   person_id   INT NOT NULL,
+    --   PRIMARY KEY(user_id),
+    --   FOREIGN KEY(person_id) REFERENCES Person(person_id) 
+    -- );
+    -- CREATE TABLE Author (
+    --   author_id     INT NOT NULL,
+    --   company_name  VARCHAR(100) NOT NULL,
+    --   founded_in    DATE NOT NULL,
+    --   PRIMARY KEY(author_id)
+    -- );
+    -- CREATE TABLE Game (
+    --   game_id     INT NOT NULL,
+    --   title       VARCHAR(150),
+    --   price       DECIMAL(7, 2), 
+    --   author_id   INT NOT NULL,
+    --   PRIMARY KEY(game_id),
+    --   FOREIGN KEY(author_id) REFERENCES Author(author_id)
+    -- );
+    -- CREATE TABLE PersonOrder (
+    --   order_id    INT NOT NULL,
+    --   amount      INT NOT NULL,
+    --   order_date  DATE NOT NULL,
+    --   person_id   INT NOT NULL,
+    --   game_id     INT NOT NULL,
+    --   PRIMARY KEY(order_id),
+    --   FOREIGN KEY(person_id)  REFERENCES Person(person_id),
+    --   FOREIGN KEY(game_id)    REFERENCES Game(game_id)
+    -- );
+  GENERATE CREATE:
+
+CREATE TABLE `tindb`.`person` (
+  `person_id` INT NOT NULL,
+  `firstname` VARCHAR(100) NOT NULL,
+  `lastname` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`person_id`));
+
+CREATE TABLE `tindb`.`author` (
+  `author_id` INT NOT NULL,
+  `company_name` VARCHAR(100) NOT NULL,
+  `founded_in` DATE NOT NULL,
+  PRIMARY KEY (`author_id`));
+
+CREATE TABLE `tindb`.`user` (
+  `user_id` INT NOT NULL,
+  `username` VARCHAR(100) NOT NULL,
+  `password` VARCHAR(300) NOT NULL,
+  `person_id` INT NOT NULL,
+  PRIMARY KEY (`user_id`),
+  INDEX `person_id_idx` (`person_id` ASC) VISIBLE,
+  CONSTRAINT `person_id`
+    FOREIGN KEY (`person_id`)
+    REFERENCES `tindb`.`person` (`person_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+    CREATE TABLE `tindb`.`game` (
+  `game_id` INT NOT NULL,
+  `title` VARCHAR(150) NOT NULL,
+  `price` DECIMAL(7,2) NOT NULL,
+  `author_id` INT NOT NULL,
+  PRIMARY KEY (`game_id`),
+  INDEX `author_id_idx` (`author_id` ASC) VISIBLE,
+  CONSTRAINT `author_id`
+    FOREIGN KEY (`author_id`)
+    REFERENCES `tindb`.`author` (`author_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+CREATE TABLE `tindb`.`wishlist` (
+  `wishlist_id` INT NOT NULL,
+  `person_id` INT NOT NULL,
+  `game_id` INT NOT NULL,
+  PRIMARY KEY (`wishlist_id`),
+  INDEX `game_id_idx` (`game_id` ASC) VISIBLE,
+  INDEX `person_id_idx` (`person_id` ASC) VISIBLE,
+  CONSTRAINT `person_fk`
+    FOREIGN KEY (`person_id`)
+    REFERENCES `tindb`.`person` (`person_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `game_id`
+    FOREIGN KEY (`game_id`)
+    REFERENCES `tindb`.`game` (`game_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+    CREATE TABLE `tindb`.`order` (
+  `order_id` INT NOT NULL,
+  `date` DATE NOT NULL,
+  `person_id` INT NOT NULL,
+  PRIMARY KEY (`order_id`),
+  INDEX `order_person_id_idx` (`person_id` ASC) VISIBLE,
+  CONSTRAINT `order_person_id`
+    FOREIGN KEY (`person_id`)
+    REFERENCES `tindb`.`person` (`person_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+CREATE TABLE `tindb`.`ordered_game` (
+  `ordered_game_id` INT NOT NULL,
+  `amount` INT NOT NULL,
+  `game_id` INT NOT NULL,
+  `order_id` INT NOT NULL,
+  PRIMARY KEY (`ordered_game_id`),
+  INDEX `ordered_game_game_id_idx` (`game_id` ASC) VISIBLE,
+  INDEX `ordered_game_order_id_idx` (`order_id` ASC) VISIBLE,
+  CONSTRAINT `ordered_game_game_id`
+    FOREIGN KEY (`game_id`)
+    REFERENCES `tindb`.`game` (`game_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `ordered_game_order_id`
+    FOREIGN KEY (`order_id`)
+    REFERENCES `tindb`.`order` (`order_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+
+  Populate the database:
+
+    INSERT INTO Author(company_name, founded_in) VALUES ('Id Software', '1991-02-01');
+    INSERT INTO Author(company_name, founded_in) VALUES ('Blizzard Entertainment', '1991-02-08');
+    INSERT INTO Author(company_name, founded_in) VALUES ('Riot Games', '2006-08-31');
