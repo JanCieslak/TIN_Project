@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Game } from "./game.entity";
 import { OrderedGame } from "./ordered.game.entity";
 import { Person } from "./person.entity";
@@ -15,5 +15,6 @@ export class Order {
     person: Person;
 
     @OneToMany(type => OrderedGame, orderedGame => orderedGame.order)
+    @JoinColumn({ name: 'order_id' })
     orderedGames: OrderedGame[];
 }

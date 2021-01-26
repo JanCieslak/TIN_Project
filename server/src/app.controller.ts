@@ -10,9 +10,4 @@ export class AppController {
   hello(): string {
     return 'Hi';
   }
-
-  @Get("/authors")
-  getAuthors(): Promise<Author[]> {
-    return this.appService.findAllAuthors();
-  }
 }

@@ -46,19 +46,20 @@ MySQL:
   GENERATE CREATE:
 
 CREATE TABLE `tindb`.`person` (
-  `person_id` INT NOT NULL,
+  `person_id` INT NOT NULL AUTO_INCREMENT,
   `firstname` VARCHAR(100) NOT NULL,
   `lastname` VARCHAR(100) NOT NULL,
+  `email` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`person_id`));
 
 CREATE TABLE `tindb`.`author` (
-  `author_id` INT NOT NULL,
+  `author_id` INT NOT NULL AUTO_INCREMENT,
   `company_name` VARCHAR(100) NOT NULL,
   `founded_in` DATE NOT NULL,
   PRIMARY KEY (`author_id`));
 
 CREATE TABLE `tindb`.`user` (
-  `user_id` INT NOT NULL,
+  `user_id` INT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(100) NOT NULL,
   `password` VARCHAR(300) NOT NULL,
   `person_id` INT NOT NULL,
@@ -69,8 +70,9 @@ CREATE TABLE `tindb`.`user` (
     REFERENCES `tindb`.`person` (`person_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
-    CREATE TABLE `tindb`.`game` (
-  `game_id` INT NOT NULL,
+
+CREATE TABLE `tindb`.`game` (
+  `game_id` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(150) NOT NULL,
   `price` DECIMAL(7,2) NOT NULL,
   `author_id` INT NOT NULL,
@@ -83,7 +85,7 @@ CREATE TABLE `tindb`.`user` (
     ON UPDATE NO ACTION);
 
 CREATE TABLE `tindb`.`wishlist` (
-  `wishlist_id` INT NOT NULL,
+  `wishlist_id` INT NOT NULL AUTO_INCREMENT,
   `person_id` INT NOT NULL,
   `game_id` INT NOT NULL,
   PRIMARY KEY (`wishlist_id`),
@@ -101,7 +103,7 @@ CREATE TABLE `tindb`.`wishlist` (
     ON UPDATE NO ACTION);
 
     CREATE TABLE `tindb`.`order` (
-  `order_id` INT NOT NULL,
+  `order_id` INT NOT NULL AUTO_INCREMENT,
   `date` DATE NOT NULL,
   `person_id` INT NOT NULL,
   PRIMARY KEY (`order_id`),
@@ -113,7 +115,7 @@ CREATE TABLE `tindb`.`wishlist` (
     ON UPDATE NO ACTION);
 
 CREATE TABLE `tindb`.`ordered_game` (
-  `ordered_game_id` INT NOT NULL,
+  `ordered_game_id` INT NOT NULL AUTO_INCREMENT,
   `amount` INT NOT NULL,
   `game_id` INT NOT NULL,
   `order_id` INT NOT NULL,
@@ -138,3 +140,27 @@ CREATE TABLE `tindb`.`ordered_game` (
     INSERT INTO Author(company_name, founded_in) VALUES ('Id Software', '1991-02-01');
     INSERT INTO Author(company_name, founded_in) VALUES ('Blizzard Entertainment', '1991-02-08');
     INSERT INTO Author(company_name, founded_in) VALUES ('Riot Games', '2006-08-31');
+    
+    INSERT INTO Game(title, price, author_id) VALUES ('Doom Eternal - Standard Edition', 249.99, 1);
+    INSERT INTO Game(title, price, author_id) VALUES ('Overwatch', 50.00, 2);
+    INSERT INTO Game(title, price, author_id) VALUES ('League of Legends', 0, 3);
+
+    INSERT INTO Person(firstname, lastname, email) VALUES ('Jan', 'Cieślak', 'jankos@mail.com');
+    INSERT INTO Person(firstname, lastname, email) VALUES ('Wiktoria', 'Żer', 'wicior@gmail.eu');
+    INSERT INTO Person(firstname, lastname, email) VALUES ('Roberto', 'Karlos', 'rob@carlos.com');
+
+    INSERT INTO User(username, password, person_id) VALUES ('janecki', 'maslo', 1);
+    INSERT INTO User(username, password, person_id) VALUES ('wicior', 'haslo', 2);
+    INSERT INTO User(username, password, person_id) VALUES ('robson', 'karlito', 3);
+
+    INSERT INTO tindb.Order(date, person_id) VALUES ('2021-01-01', 1);
+    INSERT INTO tindb.Order(date, person_id) VALUES ('2020-11-15', 2);
+    INSERT INTO tindb.Order(date, person_id) VALUES ('2020-06-25', 3);
+
+    INSERT INTO Ordered_Game(game_id, order_id, amount) VALUES (1, 2, 4);
+    INSERT INTO Ordered_Game(game_id, order_id, amount) VALUES (2, 3, 3);
+    INSERT INTO Ordered_Game(game_id, order_id, amount) VALUES (3, 1, 25);
+    
+    INSERT INTO Wishlist(person_id, game_id) VALUES (1, 2);
+    INSERT INTO Wishlist(person_id, game_id) VALUES (2, 3);
+    INSERT INTO Wishlist(person_id, game_id) VALUES (3, 1);

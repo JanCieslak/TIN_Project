@@ -1,46 +1,8 @@
-nav {
-    display: flex;
-    justify-content: center;
-
-    background-color: #7952B3;
-
-    height: 65px;
-    width: 100vw;
+header {
+  background-color: #7952b3;
 }
 
-nav button {
-    background-color: transparent;
-    border: none;
-    outline: none;
-
-    color: white;
-    font-size: 24px;
-}
-
-nav button:hover {
-    color: #ffe484;
-    cursor: pointer;
-
-    transition:         color 200ms ease-out;
-    -webkit-transition: color 200ms ease-out;
-    -moz-transition:    color 200ms ease-out;
-}
-
-#container {
-    display: flex;
-    justify-content: space-between;
-    width: calc(1100px / var(--size-divisor));
-}
-
-#left {
-    display: flex;
-    justify-content: space-between;
-}
-
-#left button {
-    margin-right: 50px;
-}
-
-#right {
-    display: flex;
+.link:hover { 
+  color:#ffe484;
+  transition: color 0.2s ease-in;
 }

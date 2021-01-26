@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Author } from "./author.entity";
 import { Order } from "./order.entity";
 import { OrderedGame } from "./ordered.game.entity";
@@ -15,12 +15,14 @@ export class Game {
     @Column({ name: 'price' })
     price: number;
 
-    @ManyToOne(type => Author, author => author.games, { cascade: true })
+    @ManyToOne(type => Author, author => author.games)
     author: Author;
 
     @OneToMany(type => Wishlist, wishlist => wishlist.game)
+    @JoinColumn({ name: 'game_id' })
     wishlists: Wishlist[];
 
     @OneToMany(type => OrderedGame, orderedGame => orderedGame.game)
+    @JoinColumn({ name: 'game_id' })
     orderedGames: OrderedGame[];
 }

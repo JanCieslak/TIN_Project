@@ -1,4 +1,4 @@
-import { Column, PrimaryGeneratedColumn, Entity, OneToOne, OneToMany } from "typeorm";
+import { Column, PrimaryGeneratedColumn, Entity, OneToOne, OneToMany, JoinColumn } from "typeorm";
 import { Order } from "./order.entity";
 import { User } from "./user.entity";
 import { Wishlist } from "./wishlist.entity";
@@ -18,11 +18,14 @@ export class Person {
     email: string;
 
     @OneToOne(type => User, user => user.person)
+    @JoinColumn({ name: 'person_id' })
     user: User;
 
     @OneToMany(type => Wishlist, wishlist => wishlist.person)
+    @JoinColumn({ name: 'person_id' })
     wishlists: Wishlist[];
 
     @OneToMany(type => Order, order => order.person)
+    @JoinColumn({ name: 'person_id' })
     orders: Order[];
 }
