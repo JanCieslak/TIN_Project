@@ -1,4 +1,4 @@
 export class CreateOrderDto {
-    orderDate: Date;
+    date: Date;
     personId: number;
 }

@@ -1,14 +1,17 @@
+import { IsInt, Max } from "class-validator";
 import { Collection } from "mongoose";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Game } from "./game.entity";
 import { Order } from "./order.entity";
 
-@Entity()
+@Entity({ name: 'orderedGame' })
 export class OrderedGame {
-    @PrimaryGeneratedColumn({ name: 'ordered_game_id' })
+    @PrimaryGeneratedColumn({ name: 'orderedGameId' })
     id: number;
 
     @Column({ name: 'amount' })
+    @IsInt()
+    @Max(100000)
     amount: number;
 
     @ManyToOne(type => Order, order => order.orderedGames)

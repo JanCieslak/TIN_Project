@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { isNumeric, isDate } from '../../util';
+import { NotificationManager } from 'react-notifications';
 import '../../styles/TableRow.css';
 
 // TODO: Fix field values when switching between simple and detailed views in editingMode
@@ -33,17 +34,19 @@ export default class TableRow extends Component {
             if (isNumeric(value)) {
                 requestData.push(parseInt(value, 10));
             } else if (isDate(value)) {
-                requestData.push(new Date(value));
+                const date = new Date(value)
+                date.setHours(24);
+                requestData.push(date);
             } else if (typeof value === 'string') {
                 requestData.push(value);
             } else {
-                // TODO: Something went wrong
+                NotificationManager.warning('Wrong input!!!');
             }
         }
 
-        console.log(requestData);
-
         this.setState({ editingMode: false });
+
+        this.props.updateRecord(this.props.index, requestData);
     }
 
     onEdit = (event) => {

@@ -1,8 +1,9 @@
 import { Component, createRef } from 'react';
 import Card from './Tables/Card';
 import NewRecordInput from './Tables/NewRecordInput';
-import { snakeToCamel, isDate } from '../util';
+import { isDate, isNumeric } from '../util';
 import TableRow from './Tables/TableRow';
+import { NotificationManager } from 'react-notifications';
 
 export default class Tables extends Component {
     constructor(props) {
@@ -76,41 +77,70 @@ export default class Tables extends Component {
     }
 
     addRecord = () => {
-        // TODO: validate
-        // TODO: post new record
-
-        // convert names from snake_case to camelCase
-        const structure = this.state.recordStructure.map(name => snakeToCamel(name));
-
         // convert to object
         const requestObject = {}
         for (let i = 0; i < this.state.fields.length; i++) {
-            requestObject[structure[i]] = this.state.fields[i];
+            if (isNumeric(this.state.fields[i])) {
+                requestObject[this.state.recordStructure[i]] = parseInt(this.state.fields[i], 10);
+            } else if (isDate(this.state.fields[i])) {
+                requestObject[this.state.recordStructure[i]] = new Date(this.state.fields[i]);
+            } else {
+                requestObject[this.state.recordStructure[i]] = this.state.fields[i];
+            }
         }
+        // console.log(requestObject);
 
         fetch(`http://localhost:3000/${this.state.cards[this.state.currentCard]}`, { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestObject)
+        }).then(response => {
+            if (response.ok) {
+                this.setState({ tableRecords: [...this.state.tableRecords, [...this.state.fields]],
+                                fields: new Array(this.state.fields.length) });
+            } else {
+                NotificationManager.warning('Wrong input!');
+            }
         });
-        this.setState({ tableRecords: [...this.state.tableRecords, [...this.state.fields]],
-                        fields: new Array(this.state.fields.length) });
     }
 
     updateRecord = (index, updatedRecord) => {
+        console.log(this.state.recordStructure);
+        console.log(updatedRecord);
 
+        const requestObject = {};
+        for (let i = 0; i < this.state.recordStructure.length; i++) {
+            requestObject[this.state.recordStructure[i]] = updatedRecord[i];
+        }
+
+        console.log('requestObject:', requestObject);
+
+        fetch(`http://localhost:3000/${this.state.cards[this.state.currentCard]}`, { 
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestObject)
+        }).then(response => {
+            if (response.ok) {
+                this.fetchRecords();
+            } else {
+                NotificationManager.warning('Wrong input!');
+            }
+        });
     }
 
     deleteRecord = (index) => {
-        console.log(`delete record with index ${index}`);
         fetch(`http://localhost:3000/${this.state.cards[this.state.currentCard]}`, { 
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: this.state.tableRecords[index][0] })
+        }).then(response => {
+            if (response.ok) {
+                this.state.tableRecords.splice(index, 1);
+                this.setState({ tableRecords: this.state.tableRecords });
+            } else {
+                NotificationManager.info('This app does\'t support cascade delete. Delete associated records firstly!')
+            }
         });
-
-        this.state.tableRecords.splice(index, 1);
-        this.setState({ tableRecords: this.state.tableRecords });
     }
 
     render = () => {
@@ -183,7 +213,7 @@ export default class Tables extends Component {
                                     return this.detailedView.current.checked ? true : (!this.detailedView.current.checked && 
                                         this.state.simpleColumns[this.state.currentCard].includes(index))
                                 });
-                                return <TableRow key={index} id={this.state.tableRecords[index][0]} index={index} record={recordData} deleteRecord={this.deleteRecord} detailedView={this.detailedView} />
+                                return <TableRow key={index} id={this.state.tableRecords[index][0]} index={index} record={recordData} deleteRecord={this.deleteRecord} updateRecord={this.updateRecord} detailedView={this.detailedView} />
                             })
                         }
                     </tbody>
