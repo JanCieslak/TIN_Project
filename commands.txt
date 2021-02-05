@@ -2,8 +2,9 @@ Here are the commands to create and populate the database
 You can do it in the terminal by:
   - finding your mysql.exe (my is in the path: C:\\Program Files\\MySQL\\MySQL Server\\bin\\mysql.exe)
   - run it like that .\mysql.exe -u <username> -p (I run it with .\mysql.exe -u root -p)
-  - log in with you password
-  - copy the commands below and it should be working :)
+  - log in with your password
+  - copy the commands below 
+  - change it should be working :)
 
 CREATE DATABASE tindb;
 USE tindb;

@@ -1,5 +1,6 @@
 import { Component, createRef } from 'react';
 import Card from './Tables/Card';
+import Nav from './Nav';
 import NewRecordInput from './Tables/NewRecordInput';
 import { isDate, isNumeric } from '../util';
 import TableRow from './Tables/TableRow';
@@ -145,79 +146,83 @@ export default class Tables extends Component {
 
     render = () => {
         return (
-            <div className="center mt5 w-60-l w-70-m w-100-ns">
+            <div>
+                <Nav />
 
-                {/* TABLES */}
-                <h1>Tables</h1>
-                <div>
-                {
-                    this.state.cards.map((card, index) => {
-                        // TODO: Refactor as in NewRecordInput if possible
-                        if (this.state.currentCard === index) {
-                            return <Card key={index} name={card} onClick={this.onCardClick} selected={true} />
-                        } else {
-                            return <Card key={index} name={card} onClick={this.onCardClick} />
-                        }
-                    })
-                }
-                </div>
+                <div className="center mt5 w-60-l w-70-m w-100-ns">
 
-                {/* NEW RECORDS */}
-                <h1 className="mt5">New record</h1>
-                <div>
-                    <form>
-                        {
-                            this.state.recordStructure.slice(1).map((colName, index) => {
-                                return <NewRecordInput key={index} index={index + 1} name={colName} onChange={this.onFormChange} />
-                            })
-                        }
+                    {/* TABLES */}
+                    <h1>Tables</h1>
+                    <div>
+                    {
+                        this.state.cards.map((card, index) => {
+                            // TODO: Refactor as in NewRecordInput if possible
+                            if (this.state.currentCard === index) {
+                                return <Card key={index} name={card} onClick={this.onCardClick} selected={true} />
+                            } else {
+                                return <Card key={index} name={card} onClick={this.onCardClick} />
+                            }
+                        })
+                    }
+                    </div>
 
-                        <div className="mt3">
-                            <button type="reset" onClick={this.addRecord} className="ph4 pv2 br-pill b--transparent bg-green white tracked fw6 pointer grow">add</button>
-                            <button type="reset" className="ph4 pv2 br-pill b--transparent bg-red white tracked fw6 ml3 pointer grow">clear</button>
-                        </div>
-                    </form>
-                </div>
-
-                {/* RECORDS */}
-                <h1 className="mt5">Records</h1>
-                <form>
-                    <input onChange={this.fetchRecords} type="radio" name="view-type" value="simple" className="mv2" /> 
-                    <label htmlFor="simple" className="ml2 tracked">Simple</label>
-
-                    <br />
-
-                    <input onChange={this.fetchRecords} ref={this.detailedView} type="radio" name="view-type" value="detailed" className="mt2 mb3" /> 
-                    <label htmlFor="detailed" className="ml2 tracked fw6">Detailed</label>
-                </form>
-
-                {/* DatabaseTable */}
-                <table>
-                    <thead>
-                        <tr>
-                            <th className="ttu tracked ph3 pv2 bg-gray">{/* BLANK CELL */}</th>
-                            { 
-                                this.state.recordStructure.filter((record, index) => {
-                                    return this.detailedView.current.checked ? true : (!this.detailedView.current.checked && 
-                                        this.state.simpleColumns[this.state.currentCard].includes(index))
-                                }).map((record, index) => {
-                                    return <th key={index} className="ttu tracked ph3 pv2 bg-light-gray">{record}</th>
+                    {/* NEW RECORDS */}
+                    <h1 className="mt5">New record</h1>
+                    <div>
+                        <form>
+                            {
+                                this.state.recordStructure.slice(1).map((colName, index) => {
+                                    return <NewRecordInput key={index} index={index + 1} name={colName} onChange={this.onFormChange} />
                                 })
                             }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            this.state.tableRecords.map((record, index) => {
-                                const recordData = record.filter((record, index) => {
-                                    return this.detailedView.current.checked ? true : (!this.detailedView.current.checked && 
-                                        this.state.simpleColumns[this.state.currentCard].includes(index))
-                                });
-                                return <TableRow key={index} id={this.state.tableRecords[index][0]} index={index} record={recordData} deleteRecord={this.deleteRecord} updateRecord={this.updateRecord} detailedView={this.detailedView} />
-                            })
-                        }
-                    </tbody>
-                </table>
+
+                            <div className="mt3">
+                                <button type="reset" onClick={this.addRecord} className="ph4 pv2 br-pill b--transparent bg-green white tracked fw6 pointer grow">add</button>
+                                <button type="reset" className="ph4 pv2 br-pill b--transparent bg-red white tracked fw6 ml3 pointer grow">clear</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    {/* RECORDS */}
+                    <h1 className="mt5">Records</h1>
+                    <form>
+                        <input onChange={this.fetchRecords} type="radio" name="view-type" value="simple" className="mv2" /> 
+                        <label htmlFor="simple" className="ml2 tracked">Simple</label>
+
+                        <br />
+
+                        <input onChange={this.fetchRecords} ref={this.detailedView} type="radio" name="view-type" value="detailed" className="mt2 mb3" /> 
+                        <label htmlFor="detailed" className="ml2 tracked fw6">Detailed</label>
+                    </form>
+
+                    {/* DatabaseTable */}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th className="ttu tracked ph3 pv2 bg-gray">{/* BLANK CELL */}</th>
+                                { 
+                                    this.state.recordStructure.filter((record, index) => {
+                                        return this.detailedView.current.checked ? true : (!this.detailedView.current.checked && 
+                                            this.state.simpleColumns[this.state.currentCard].includes(index))
+                                    }).map((record, index) => {
+                                        return <th key={index} className="ttu tracked ph3 pv2 bg-light-gray">{record}</th>
+                                    })
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                this.state.tableRecords.map((record, index) => {
+                                    const recordData = record.filter((record, index) => {
+                                        return this.detailedView.current.checked ? true : (!this.detailedView.current.checked && 
+                                            this.state.simpleColumns[this.state.currentCard].includes(index))
+                                    });
+                                    return <TableRow key={index} id={this.state.tableRecords[index][0]} index={index} record={recordData} deleteRecord={this.deleteRecord} updateRecord={this.updateRecord} detailedView={this.detailedView} />
+                                })
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         );
     }
